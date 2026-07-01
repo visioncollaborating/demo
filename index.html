@@ -1,0 +1,36 @@
+<div id="lista-eventos">
+  <p>Cargando eventos...</p>
+</div>
+
+<script>
+  // Pega aquí la URL que te dio Sheety
+  const API_URL = "https://api.sheety.co/459ca88de72b4c2d5ec973d8c1f4e4ca/demo/demo";
+
+  async function obtenerEventos() {
+    try {
+      const respuesta = await fetch(API_URL);
+      const datos = await respuesta.json();
+      
+      const contenedor = document.getElementById("lista-eventos");
+      contenedor.innerHTML = ""; // Limpiar el mensaje de carga
+
+      // Crear el HTML para cada evento
+      datos.eventos.forEach(evento => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <h3>${evento.titulo}</h3>
+          <p><strong>Fecha:</strong> ${evento.fecha}</p>
+          <p>${evento.descripcion}</p>
+          <hr>
+        `;
+        contenedor.appendChild(div);
+      });
+    } catch (error) {
+      console.error("Error al cargar eventos:", error);
+      document.getElementById("lista-eventos").innerHTML = "Error al cargar los eventos.";
+    }
+  }
+
+  // Ejecutar al cargar la página
+  obtenerEventos();
+</script>
