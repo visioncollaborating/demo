@@ -1,26 +1,30 @@
+<div id="lista-eventos">
+  <p>Cargando eventos...</p>
+</div>
+
 <script>
   const API_URL = "https://api.sheety.co/459ca88de72b4c2d5ec973d8c1f4e4ca/demo/demo";
 
   async function obtenerEventos() {
+    const contenedor = document.getElementById("lista-eventos");
+    
+    // Verificación de seguridad: si el contenedor no existe, no hacemos nada
+    if (!contenedor) {
+      console.error("No se encontró el elemento con id 'lista-eventos'");
+      return;
+    }
+
     try {
       const respuesta = await fetch(API_URL);
-      if (!respuesta.ok) throw new Error("Error en la conexión con Sheety");
-      
       const datos = await respuesta.json();
       
-      // Obtenemos el primer nombre de hoja disponible en el JSON
-      const nombresHoja = Object.keys(datos);
-      const nombreHojaReal = nombresHoja[0]; 
-      const listaEventos = datos[nombreHojaReal];
+      // Según tu captura, la llave se llama "demo"
+      const lista = datos.demo; 
       
-      console.log("Datos recibidos:", datos); // Revisa la consola para ver qué llega exactamente
+      contenedor.innerHTML = ""; // Limpiamos el "Cargando..."
 
-      const contenedor = document.getElementById("lista-eventos");
-      contenedor.innerHTML = ""; 
-
-      listaEventos.forEach(evento => {
+      lista.forEach(evento => {
         const div = document.createElement("div");
-        // Asegúrate de que los nombres de los campos coincidan exactamente con tus columnas
         div.innerHTML = `
           <h3>${evento.titulo || "Sin título"}</h3>
           <p><strong>Fecha:</strong> ${evento.fecha || "Sin fecha"}</p>
@@ -31,7 +35,7 @@
       });
     } catch (error) {
       console.error(error);
-      document.getElementById("lista-eventos").innerHTML = "Error al cargar. Revisa la consola (F12).";
+      contenedor.innerHTML = "Error al cargar los datos.";
     }
   }
 
